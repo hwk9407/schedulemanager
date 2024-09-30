@@ -19,11 +19,11 @@
 
 ### 필수 기능 구현
 - #### Lv 1.
-  - #### [API 명세서 작성 하기](https://buttery-caravel-ad6.notion.site/0c6128a26a16468e8eea13fe2ca79131?v=ea833add42784c129a0d3a8119058308)
+  - #### [API 명세서](https://buttery-caravel-ad6.notion.site/0c6128a26a16468e8eea13fe2ca79131?v=ea833add42784c129a0d3a8119058308)
 
 <br>
 
-  - #### ERD 작성하기
+  - #### ERD 작성
     ![ERD](ERD-1.png)
 
 <br>
