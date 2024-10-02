@@ -21,17 +21,17 @@ public class ScheduleRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // 일정 생성
-    public void create(Schedule schedule, Author author) {
+    // 작성자 생성
+    public Long authorSave(Author author) {
         KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
 
         String authorSql = "INSERT INTO author (name) VALUES (?)";
         jdbcTemplate.update(con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(authorSql,
                             Statement.RETURN_GENERATED_KEYS); // PK를 Keyholder에 담음
-                            // new String[] {"authorId"}); // authorId 컬럼
+                    // new String[] {"authorId"}); // authorId 컬럼
 
-                    preparedStatement.setString(1, schedule.getPassword());
+                    preparedStatement.setString(1, author.getName());
                     return preparedStatement;
                 },
                 keyHolder);
@@ -39,10 +39,16 @@ public class ScheduleRepository {
         // DB Insert 후 받아온 author PK
         Long authorId = keyHolder.getKey().longValue();
         author.setAuthorId(authorId);
-        schedule.setAuthorId(authorId);
+
+        return authorId;
+    }
+
+    // 일정 생성
+    public Long scheduleSave(Schedule schedule) {
+        KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
 
         // DB 새로 생성
-        String sql = "INSERT INTO schedule (password, content, createDate, modifiedDate) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO schedule (password, content, createDate, modifiedDate, authorId) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(sql,
                             Statement.RETURN_GENERATED_KEYS);
@@ -56,6 +62,7 @@ public class ScheduleRepository {
                     preparedStatement.setString(2, schedule.getContent());
                     preparedStatement.setString(3, formattedCreateDate);
                     preparedStatement.setString(4, formattedModifiedDate);
+                    preparedStatement.setLong(5, schedule.getAuthorId());
                     return preparedStatement;
                 },
                 keyHolder);
@@ -64,5 +71,6 @@ public class ScheduleRepository {
         Long scheduleId = keyHolder.getKey().longValue();
         schedule.setScheduleId(scheduleId);
 
+        return scheduleId;
     }
 }
