@@ -6,7 +6,7 @@ import lombok.Getter;
 public class ScheduleCreateResponseDto extends ResponseDto {
     private final Long scheduleId;
 
-    public ScheduleCreateResponseDto(String message, int statusCode, long scheduleId) {
+    public ScheduleCreateResponseDto(int statusCode, String message, long scheduleId) {
         super(statusCode, message);
         this.scheduleId = scheduleId;
     }
