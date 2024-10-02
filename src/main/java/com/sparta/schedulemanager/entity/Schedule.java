@@ -16,6 +16,7 @@ public class Schedule {
     private String content;
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
+    private Long authorId;
 
     public Schedule(ScheduleRequestDto requestDto) {
         this.scheduleId = requestDto.getScheduleId();
@@ -23,12 +24,15 @@ public class Schedule {
         this.content = requestDto.getContent();
         this.createDate = requestDto.getCreateDate();
         this.modifiedDate = requestDto.getModifiedDate();
+        this.authorId = requestDto.getAuthorId();
     }
 
-    public Schedule(String password, String content, LocalDateTime createDate, LocalDateTime modifiedDate) {
+    public Schedule(Long scheduleId, String password, String content, LocalDateTime createDate, LocalDateTime modifiedDate, Long authorId) {
+        this.scheduleId = scheduleId;
         this.password = password;
         this.content = content;
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
+        this.authorId = authorId;
     }
 }

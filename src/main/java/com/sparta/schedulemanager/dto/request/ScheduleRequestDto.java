@@ -13,4 +13,5 @@ public class ScheduleRequestDto {
     private String content;
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
+    private Long authorId;
 }
