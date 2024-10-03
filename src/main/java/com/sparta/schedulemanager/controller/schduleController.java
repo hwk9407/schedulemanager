@@ -1,11 +1,8 @@
 package com.sparta.schedulemanager.controller;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.sparta.schedulemanager.dto.request.ScheduleRequestDto;
-import com.sparta.schedulemanager.dto.response.ErrorResponseDto;
 import com.sparta.schedulemanager.dto.response.ResponseDto;
 import com.sparta.schedulemanager.service.ScheduleService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +15,7 @@ public class schduleController {
         this.scheduleService = scheduleService;
     }
 
+    // 일정 생성
     @PostMapping("/schedule")
     public ResponseEntity<ResponseDto> createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
 
@@ -36,4 +34,19 @@ public class schduleController {
         }*/
     }
 
+    // 전체 일정 조회
+    @GetMapping("/schedule")
+    public ResponseEntity<ResponseDto> getAllSchedules() {
+
+        ResponseDto responseDto = scheduleService.getAllSchedules();
+        return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
+    }
+
+    // 특정 일정 조회
+    @GetMapping("/schedule/{scheduleId}")
+    public ResponseEntity<ResponseDto> getSchedule(@PathVariable Long scheduleId) {
+
+        ResponseDto responseDto = scheduleService.getSchedule(scheduleId);
+        return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
+    }
 }

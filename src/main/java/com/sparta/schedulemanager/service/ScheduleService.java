@@ -1,8 +1,7 @@
 package com.sparta.schedulemanager.service;
 
 import com.sparta.schedulemanager.dto.request.ScheduleRequestDto;
-import com.sparta.schedulemanager.dto.response.ResponseDto;
-import com.sparta.schedulemanager.dto.response.ScheduleCreateResponseDto;
+import com.sparta.schedulemanager.dto.response.*;
 import com.sparta.schedulemanager.entity.Author;
 import com.sparta.schedulemanager.entity.Schedule;
 import com.sparta.schedulemanager.repository.ScheduleRepository;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ScheduleService {
@@ -39,4 +39,24 @@ public class ScheduleService {
         // 실패 시 ErrorResponseDto 반환
     }
 
+    // 모든 일정 조회
+    public ResponseDto getAllSchedules() {
+        List<Schedule> scheduleList = scheduleRepository.findAll();
+
+        List<ScheduleDto> scheduleDtos = scheduleList.stream()
+                .map(schedule -> new ScheduleDto(schedule, scheduleRepository.findAuthor(schedule.getAuthorId())))
+                .toList();
+
+        // 성공적으로 조회 시
+        return new ScheduleListResponseDto(200, "조회를 성공하였습니다.", scheduleDtos);
+
+        // 실패 시 ErrorResponseDto 반환
+    }
+
+    public ResponseDto getSchedule(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findSchedule(scheduleId);
+        ScheduleDto scheduleDto = new ScheduleDto(schedule, scheduleRepository.findAuthor(schedule.getAuthorId()));
+
+        return new ScheduleResponseDto(200, "조회를 성공하였습니다.", scheduleDto);
+    }
 }
