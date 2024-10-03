@@ -9,6 +9,8 @@ import com.sparta.schedulemanager.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
@@ -22,6 +24,9 @@ public class ScheduleService {
         Schedule schedule = new Schedule(requestDto);
         Author author = new Author(requestDto);
 
+        // 작성일, 수정일을 현재 시간으로 설정
+        schedule.setCreateDate(LocalDateTime.now());
+
         // 일정 DB 생성
         Long authorId = scheduleRepository.authorSave(author);
         schedule.setAuthorId(authorId);
@@ -29,7 +34,7 @@ public class ScheduleService {
         Long scheduleId = scheduleRepository.scheduleSave(schedule);
 
         // 성공적으로 생성
-        return new ScheduleCreateResponseDto(200, "등록을 성공하였습니다.", scheduleId);
+        return new ScheduleCreateResponseDto(201, "등록을 성공하였습니다.", scheduleId);
 
         // 실패 시 ErrorResponseDto 반환
     }

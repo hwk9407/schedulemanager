@@ -11,7 +11,5 @@ public class ScheduleRequestDto {
     private String name;
     private String password;
     private String content;
-    private LocalDateTime createDate;
-    private LocalDateTime modifiedDate;
     private Long authorId;
 }

@@ -22,8 +22,6 @@ public class Schedule {
         this.scheduleId = requestDto.getScheduleId();
         this.password = requestDto.getPassword();
         this.content = requestDto.getContent();
-        this.createDate = requestDto.getCreateDate();
-        this.modifiedDate = requestDto.getModifiedDate();
         this.authorId = requestDto.getAuthorId();
     }
 
@@ -34,5 +32,10 @@ public class Schedule {
         this.createDate = createDate;
         this.modifiedDate = modifiedDate;
         this.authorId = authorId;
+    }
+
+    public void setCreateDate(LocalDateTime createDate) {
+        this.createDate = createDate;
+        this.modifiedDate = this.createDate; // 수정일도 함께 설정
     }
 }
