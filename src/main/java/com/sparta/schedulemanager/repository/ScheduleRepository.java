@@ -148,4 +148,9 @@ public class ScheduleRepository {
                     return preparedStatement;
                 });
     }
+
+    public void delete(Long scheduleId) {
+        String sql = "DELETE FROM schedule WHERE scheduleId = ?";
+        jdbcTemplate.update(sql, scheduleId);
+    }
 }

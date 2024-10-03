@@ -80,11 +80,33 @@ public class ScheduleService {
             schedule.setModifiedDate(LocalDateTime.now());
 
 
-            // schedule 내용 수정
+            // schedule 수정
             scheduleRepository.update(scheduleId, schedule);
 
             // 성공적으로 수정
             return new ScheduleUpdateResponseDto(201, "수정을 성공하였습니다.", scheduleId);
+        } else {
+            // 실패 시 ErrorResponseDto 반환
+            return new ErrorResponseDto(400, "일정이 존재하지 않습니다.");
+        }
+    }
+
+    public ResponseDto deleteSchedule(Long scheduleId, ScheduleRequestDto scheduleRequestDto) {
+        // id로 일정 Entity 생성
+        Schedule schedule = scheduleRepository.findSchedule(scheduleId);
+
+
+        if (schedule != null) {
+            // 비밀번호 확인
+            if (!schedule.getPassword().equals(scheduleRequestDto.getPassword())) {
+                return new ErrorResponseDto(400, "비밀번호가 일치하지 않습니다.");
+            }
+
+            // schedule 삭제
+            scheduleRepository.delete(scheduleId);
+
+            // 성공적으로 삭제
+            return new ScheduleDeleteResponseDto(200, "삭제를 성공하였습니다.", scheduleId);
         } else {
             // 실패 시 ErrorResponseDto 반환
             return new ErrorResponseDto(400, "일정이 존재하지 않습니다.");
