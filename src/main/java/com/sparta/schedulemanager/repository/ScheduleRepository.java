@@ -1,7 +1,5 @@
 package com.sparta.schedulemanager.repository;
 
-import com.sparta.schedulemanager.dto.response.ResponseDto;
-import com.sparta.schedulemanager.dto.response.ScheduleDto;
 import com.sparta.schedulemanager.entity.Author;
 import com.sparta.schedulemanager.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -60,15 +58,10 @@ public class ScheduleRepository {
                     PreparedStatement preparedStatement = con.prepareStatement(sql,
                             Statement.RETURN_GENERATED_KEYS);
 
-
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                    String formattedCreateDate = schedule.getCreateDate().format(formatter);
-                    String formattedModifiedDate = schedule.getModifiedDate().format(formatter);
-
                     preparedStatement.setString(1, schedule.getPassword());
                     preparedStatement.setString(2, schedule.getContent());
-                    preparedStatement.setString(3, formattedCreateDate);
-                    preparedStatement.setString(4, formattedModifiedDate);
+                    preparedStatement.setObject(3, schedule.getCreateDate());
+                    preparedStatement.setObject(4, schedule.getModifiedDate());
                     preparedStatement.setLong(5, schedule.getAuthorId());
                     return preparedStatement;
                 },
@@ -140,5 +133,19 @@ public class ScheduleRepository {
                 return null;
             }
         }, scheduleId);
+    }
+
+    public void update(Long scheduleId, Schedule schedule) {
+
+        String sql = "UPDATE schedule SET content = ?, modifiedDate = ? WHERE scheduleId = ?";
+
+        jdbcTemplate.update(con -> {
+                    PreparedStatement preparedStatement = con.prepareStatement(sql);
+
+                    preparedStatement.setString(1, schedule.getContent());
+                    preparedStatement.setObject(2, schedule.getModifiedDate());
+                    preparedStatement.setLong(3, scheduleId);
+                    return preparedStatement;
+                });
     }
 }

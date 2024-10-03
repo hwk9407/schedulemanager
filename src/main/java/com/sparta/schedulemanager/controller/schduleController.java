@@ -49,4 +49,12 @@ public class schduleController {
         ResponseDto responseDto = scheduleService.getSchedule(scheduleId);
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }
+
+    // 일정 수정
+    @PutMapping("/schedule/{scheduleId}")
+    public ResponseEntity<ResponseDto> updateSchedule(@PathVariable Long scheduleId, @RequestBody ScheduleRequestDto scheduleRequestDto) {
+
+        ResponseDto responseDto = scheduleService.updateSchedule(scheduleId, scheduleRequestDto);
+        return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
+    }
 }
