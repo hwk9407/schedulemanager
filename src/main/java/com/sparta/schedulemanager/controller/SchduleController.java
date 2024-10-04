@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class schduleController {
+public class SchduleController {
     ScheduleService scheduleService;
 
-    public schduleController(ScheduleService scheduleService) {
+    public SchduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
 

@@ -19,12 +19,13 @@
 
 ### 필수 기능 구현
 - #### Lv 1.
-  - #### [API 명세서](https://buttery-caravel-ad6.notion.site/0c6128a26a16468e8eea13fe2ca79131?v=ea833add42784c129a0d3a8119058308)
+  - #### [API 명세서](https://buttery-caravel-ad6.notion.site/schedule-manager-08ebe8a59bdc4e4bac0ff9b714f524d4?pvs=4)
 
 <br>
 
   - #### ERD 작성
-    ![ERD](ERD-1.png)
+    ![ERD](ERD-1.png)<br><br>
+    ![ERD2](ERD-2.png)
 
 <br>
 
@@ -40,6 +41,63 @@
   - 선택 일정 조회(선택한 일정 정보 불러오기) : 일정의 고유 식별자(ID)를 사용하여 조회
 - #### Lv 3. 
   - 선택한 일정 수정 기능 추가 : 비밀번호를 함께 전달. 작성일은 변경 불가능 하며, 수정완료시 자동으로 수정한 시점으로 변경
-  - 선택한 일정 삭제 기능 추가 : 비밀번호를 함께 
+  - 선택한 일정 삭제 기능 추가 : 비밀번호를 함께 전달.
 
-- #### Lv 4, Lv 5의 내용은 Lv3까지 구현 후 추가 예정.
+- #### Lv 4.
+  - 연관 관계 설정하기
+    - 작성자와 일정 연결 (일정 테이블에서 FK로 관리하고 동명이인이 있어도 구별할 수있게 구현)
+    - 이름 외에 이메일, 등록일, 수정일 정보 갖도록 변경
+
+- #### Lv 5.
+  - 페이지네이션
+    - 미구현..
+
+### 트러블 슈팅
+[트러블 슈팅 관련 링크](https://velog.io/@hwk__/%EC%9D%BC%EC%A0%95-%EA%B4%80%EB%A6%AC-%EC%95%B1-%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85)
+
+### 사용한 기술 스택
+- Java, Spring Boot
+- MySQL
+
+### 주요 라이브러리
+- Lombok: 보일러플레이트 코드를 줄이기 위한 라이브러리. 자동으로 getter, setter, 생성자 등을 생성.
+- JDBCTemplate: 데이터베이스와의 상호작용을 위한 라이브러리. SQL 쿼리를 쉽게 실행하고 결과를 매핑하는 데 도움을 줌.
+
+### API 특징
+- HTML 템플릿 없이 JSON 형식으로만 응답을 제공하는 RESTful API입니다.
+
+### 구조
+- Controller
+  - `ScheduleController` : 클라이언트 요청과 응답을 처리를 담당. DTO 객체로 Service계층으로 전달하고, 전달받은 DTO 객체를 클라이언트에게 응답.
+  
+- Service
+  - `ScheduleService` : 일정 관리의 핵심 비즈니스 로직을 담당. 전달받은 DTO를 Entity로 변환하여 적절한 상태코드와 메시지를 전달.
+    - 일정 생성, 수정, 삭제, 조회를 수행하며, 각각 알맞는 ResponseDto를 선택하여 컨트롤러에 반환
+    
+- Repository
+  - `ScheduleRepository` : JDBCTemplate을 사용하여 DB와 직접적인 상호작용을 담당. SQL 쿼리를 실행하고 결과를 매핑하여 CRUD를 수행.
+  
+- Entity
+  - `Author` : 작성자 엔티티. 작성자고유ID, 이름, 이메일, 작성 일정 개수, 계정생성일, 계정수정일의 정보를 담음. 작성 일정 개수는 작성자가 작성한 일정을 추적하는데 사용.
+  - `Schedule` : 일정 엔티티. 일정고유ID, 작성자고유ID, 일정 내용, 일정 비밀번호, 생성일, 수정일 정보를 담음. 비밀번호는 수정 및 삭제 접근을 제어하는데 사용.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
