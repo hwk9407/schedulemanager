@@ -5,18 +5,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class Author {
     private Long authorId;
     private String name;
+    private String email;
+    private int scheduleCount;
+    private LocalDateTime registrationDate;
+    private LocalDateTime updateDate;
 
     public Author(ScheduleRequestDto requestDto) {
+        this.authorId = requestDto.getAuthorId();
         this.name = requestDto.getName();
+        this.email = requestDto.getEmail();
     }
 
-    public Author(String name) {
-        this.name = name;
-    }
 }
