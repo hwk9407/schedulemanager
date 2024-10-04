@@ -5,6 +5,7 @@ import com.sparta.schedulemanager.dto.response.*;
 import com.sparta.schedulemanager.entity.Author;
 import com.sparta.schedulemanager.entity.Schedule;
 import com.sparta.schedulemanager.repository.ScheduleRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +29,23 @@ public class ScheduleService {
         schedule.setCreateDate(LocalDateTime.now());
 
         // 일정 DB 생성
-        Long authorId = scheduleRepository.authorSave(author);
-        schedule.setAuthorId(authorId);
+        Long authorId = 0L;
+        if (author.getAuthorId() == null) {
+            try {
+                authorId = scheduleRepository.authorSave(author);
+            } catch (DataIntegrityViolationException e) {
+                return new ErrorResponseDto(409, "중복된 이메일입니다.");
+            }
+        } else {
+            authorId = author.getAuthorId();
+        }
+        scheduleRepository.authorChangeCount(authorId, 1); // 작성자의 일정 총 개수 + 1
 
+        schedule.setAuthorId(authorId);
         Long scheduleId = scheduleRepository.scheduleSave(schedule);
 
         // 성공적으로 생성
-        return new ScheduleUpdateResponseDto(201, "등록을 성공하였습니다.", scheduleId);
+        return new ScheduleUpdateResponseDto(201, "등록을 성공하였습니다.", authorId, scheduleId);
 
         // 실패 시 ErrorResponseDto 반환
     }
@@ -84,7 +95,7 @@ public class ScheduleService {
             scheduleRepository.update(scheduleId, schedule);
 
             // 성공적으로 수정
-            return new ScheduleUpdateResponseDto(201, "수정을 성공하였습니다.", scheduleId);
+            return new ScheduleUpdateResponseDto(201, "수정을 성공하였습니다.", schedule.getAuthorId(), scheduleId);
         } else {
             // 실패 시 ErrorResponseDto 반환
             return new ErrorResponseDto(400, "일정이 존재하지 않습니다.");
@@ -104,6 +115,7 @@ public class ScheduleService {
 
             // schedule 삭제
             scheduleRepository.delete(scheduleId);
+            scheduleRepository.authorChangeCount(schedule.getAuthorId(), -1); // 작성자의 일정 총 개수 - 1
 
             // 성공적으로 삭제
             return new ScheduleDeleteResponseDto(200, "삭제를 성공하였습니다.", scheduleId);

@@ -8,10 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -30,13 +27,14 @@ public class ScheduleRepository {
     public Long authorSave(Author author) {
         KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
 
-        String authorSql = "INSERT INTO author (name) VALUES (?)";
+        String authorSql = "INSERT INTO author (name, email) VALUES (?, ?)";
         jdbcTemplate.update(con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(authorSql,
                             Statement.RETURN_GENERATED_KEYS); // PK를 Keyholder에 담음
                     // new String[] {"authorId"}); // authorId 컬럼
 
                     preparedStatement.setString(1, author.getName());
+                    preparedStatement.setString(2, author.getEmail());
                     return preparedStatement;
                 },
                 keyHolder);
@@ -46,6 +44,15 @@ public class ScheduleRepository {
         author.setAuthorId(authorId);
 
         return authorId;
+    }
+
+    // 작성자 작성일정 개수 증감
+    public void authorChangeCount(Long authorId, int change) {
+        KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
+
+        String authorSql = "UPDATE author SET scheduleCount = scheduleCount + ? WHERE authorId = ?";
+
+        jdbcTemplate.update(authorSql, change, authorId);
     }
 
     // 일정 생성
