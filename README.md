@@ -21,8 +21,6 @@
 - #### Lv 1.
   - #### [API 명세서](https://buttery-caravel-ad6.notion.site/schedule-manager-08ebe8a59bdc4e4bac0ff9b714f524d4?pvs=4)
 
-<br>
-
   - #### ERD 작성
     ![ERD](ERD-1.png)<br><br>
     ![ERD2](ERD-2.png)
