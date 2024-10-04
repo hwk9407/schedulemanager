@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -82,11 +83,38 @@ public class ScheduleRepository {
     }
 
     // 전체 조회
-    public List<Schedule> findAll() {
-        // DB 조회
-        String sql = "SELECT * FROM schedule";
+    public List<Schedule> findAll(Long id, String date, int page, int limit) {
+        int offset = (page - 1) * limit;
 
-        return jdbcTemplate.query(sql, new RowMapper<Schedule>() {
+        // DB 조회
+        // 모든 일정 조회
+        StringBuilder sql = new StringBuilder("SELECT * FROM schedule");
+        List<Object> params = new ArrayList<>();
+
+        if (id != null && date != null) {
+            sql.append(" WHERE authorId = ? AND DATE(modifiedDate) = ?");
+            params.add(id);
+            params.add(date);
+        // 특정 YYYY-MM-DD에 작성된 전체 일정 조회
+        } else if (date != null) {
+            sql.append(" WHERE DATE(modifiedDate) = ?");
+            params.add(date);
+        // 특정 ID가 작성된 전체 일정 조회
+        } else if (id != null) {
+            sql.append(" WHERE authorId = ?");
+            params.add(id);
+        }
+
+        // modifiedDate 컬럼 기준으로 내림차순 정렬
+        sql.append(" ORDER BY modifiedDate DESC");
+
+        // 페이지네이션
+        sql.append(" LIMIT ? OFFSET ?");
+        params.add(limit);
+        params.add(offset);
+
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), new RowMapper<Schedule>() {
             @Override
             public Schedule mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -98,6 +126,7 @@ public class ScheduleRepository {
                 LocalDateTime createDate = LocalDateTime.parse(resultSet.getString("createDate"), formatter);
                 LocalDateTime modifiedDate = LocalDateTime.parse(resultSet.getString("modifiedDate"), formatter);
                 Long authorId = resultSet.getLong("authorId");
+
                 return new Schedule(scheduleId, password, content, createDate, modifiedDate, authorId);
             }
         });

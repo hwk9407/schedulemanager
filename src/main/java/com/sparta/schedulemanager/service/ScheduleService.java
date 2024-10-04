@@ -15,6 +15,7 @@ import java.util.List;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+
     public ScheduleService(ScheduleRepository scheduleRepository) {
         this.scheduleRepository = scheduleRepository;
     }
@@ -50,16 +51,20 @@ public class ScheduleService {
         // 실패 시 ErrorResponseDto 반환
     }
 
-    // 모든 일정 조회
-    public ResponseDto getAllSchedules() {
-        List<Schedule> scheduleList = scheduleRepository.findAll();
+
+    public ResponseDto getAllSchedules(Long id, String date, int page, int limit) {
+
+        List<Schedule> scheduleList = scheduleRepository.findAll(id, date, page, limit);
+
+
+
 
         List<ScheduleDto> scheduleDtos = scheduleList.stream()
                 .map(schedule -> new ScheduleDto(schedule, scheduleRepository.findAuthor(schedule.getAuthorId())))
                 .toList();
 
         // 성공적으로 조회 시
-        if (scheduleList != null) {
+        if (scheduleList != null && !scheduleList.isEmpty()) {
             return new ScheduleListResponseDto(200, "조회를 성공하였습니다.", scheduleDtos);
         } else {
             // 실패 시 ErrorResponseDto 반환

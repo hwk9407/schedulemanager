@@ -36,9 +36,13 @@ public class SchduleController {
 
     // 전체 일정 조회
     @GetMapping("/schedule")
-    public ResponseEntity<ResponseDto> getAllSchedules() {
+    public ResponseEntity<ResponseDto> getAllSchedules(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String date,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int limit) {
 
-        ResponseDto responseDto = scheduleService.getAllSchedules();
+        ResponseDto responseDto = scheduleService.getAllSchedules(id, date, page, limit);
         return ResponseEntity.status(responseDto.getStatusCode()).body(responseDto);
     }
 
